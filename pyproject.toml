@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "prompt-comments"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Write comments in your AI prompts, strip them before they reach the model."
 readme = "README.md"
 requires-python = ">=3.8"
@@ -13,9 +13,10 @@ license-files = ["LICENSE"]
 authors = [
     { name = "viswanathms" },
 ]
-keywords = ["prompt", "prompt-engineering", "llm", "ai", "comments", "jinja", "template", "markdown"]
+keywords = ["prompt", "prompt-engineering", "llm", "ai", "comments", "jinja", "template", "markdown", "claude", "proxy", "claude-md", "agents-md"]
 classifiers = [
     "Development Status :: 3 - Alpha",
+    "Environment :: Console",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
@@ -40,7 +41,15 @@ Issues = "https://github.com/viswanathms/prompt-comments/issues"
 prompt-comments = "prompt_comments.cli:main"
 
 [project.optional-dependencies]
-dev = ["pytest>=7.0"]
+# In-process wrapping (`prompt_comments.install()`) needs httpx or httpx2; the
+# Anthropic / OpenAI SDKs already pull one in, so this extra is only for custom setups.
+httpx = ["httpx>=0.24"]
+dev = ["pytest>=7.0", "httpx>=0.24"]
+# Optional: also run the real-SDK smoke tests.
+sdk-tests = ["anthropic", "openai"]
+
+[tool.hatch.version]
+path = "src/prompt_comments/__init__.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/prompt_comments"]
