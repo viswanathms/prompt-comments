@@ -11,8 +11,11 @@ Prompts live in Markdown files, Jinja templates, YAML configs, plain
 your future self ("why is this instruction here?", "TODO: tighten
 this up") without the note leaking into the actual text sent to the
 model. `prompt-comments` strips comments in whatever format your
-prompt already uses, right before you hand the text to your LLM SDK
-of choice.
+prompt already uses — by hand with `strip_comments`, or
+[automatically for every LLM call](#strip-comments-from-every-llm-call-automatically):
+in-process for the Anthropic/OpenAI SDKs, through a local proxy for tools
+like Claude Code and Codex, or by building a clean `CLAUDE.md` / `AGENTS.md`
+from a commented source.
 
 ```python
 from prompt_comments import strip_comments
@@ -80,7 +83,11 @@ load_prompt("prompts/system.txt", dialect="yaml")
 prompt-comments prompts/system.md            # auto-detects dialect from extension
 prompt-comments prompts/system.txt -d yaml    # force a dialect
 cat prompt.txt | prompt-comments -d jinja     # read from stdin
+prompt-comments prompts/system.md --blank-lines comment   # drop only lines a comment emptied
+prompt-comments prompts/system.md --no-protect-code       # also strip inside code blocks
 prompt-comments --list-dialects
+prompt-comments build --help                  # CLAUDE.src.md -> CLAUDE.md
+prompt-comments proxy --help                  # local proxy for Claude Code / Codex
 python -m prompt_comments prompts/system.md   # same thing
 ```
 
@@ -208,8 +215,8 @@ repos:
 ```
 
 `@imports` inside `CLAUDE.md` are not followed — give imported files a
-`.src.md` source too. Auto-discovery looks for `*.src.md`, `*.src.mdc`
-and `*.src.txt`; pass paths explicitly for anything else.
+`.src.md` source too. Auto-discovery looks for `*.src.md`, `*.src.mdc`,
+`*.src.markdown` and `*.src.txt`; pass paths explicitly for anything else.
 
 ## Supported dialects
 

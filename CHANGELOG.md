@@ -42,7 +42,8 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 - CRLF line endings are preserved (a line comment used to swallow the `\r`).
-  The CLI also no longer converts CRLF to LF when reading files.
+  The CLI and `load_prompt` also no longer convert CRLF to LF when reading files.
+- `load_prompt` accepts `blank_lines` and `protect_code`, like `strip_comments`.
 - The CLI reports a missing file with exit code 2 instead of a traceback.
 
 ## [0.1.0]

@@ -25,3 +25,16 @@ def test_load_prompt_strip_blank_lines(tmp_path):
     p.write_text("keep\n{# drop entire line #}\nkeep too")
     result = load_prompt(p, strip_blank_lines=True)
     assert result == "keep\nkeep too"
+
+
+def test_load_prompt_blank_lines_and_protect_code(tmp_path):
+    p = tmp_path / "prompt.txt"
+    p.write_text("a\n\n// note\nb\n```\n// code\n```\n")
+    assert load_prompt(p, blank_lines="comment") == "a\n\nb\n```\n// code\n```\n"
+    assert load_prompt(p, blank_lines="comment", protect_code=False) == "a\n\nb\n```\n```\n"
+
+
+def test_load_prompt_preserves_crlf(tmp_path):
+    p = tmp_path / "prompt.txt"
+    p.write_bytes(b"a // x\r\nb\r\n")
+    assert load_prompt(p) == "a\r\nb\r\n"
