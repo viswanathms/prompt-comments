@@ -20,15 +20,26 @@ def load_prompt(
     *,
     encoding: str = "utf-8",
     strip_blank_lines: bool = False,
+    blank_lines: Optional[str] = None,
+    protect_code: bool = True,
 ) -> str:
     """Read a prompt file and return it with comments stripped.
 
     If ``dialect`` is omitted, it is inferred from the file extension
     (e.g. ``.j2`` -> ``jinja``, ``.md`` -> ``markdown``), falling back to
-    ``"default"`` for unrecognized extensions.
+    ``"default"`` for unrecognized extensions. ``blank_lines`` and
+    ``protect_code`` are passed through to :func:`~prompt_comments.core.strip_comments`.
+    Line endings are preserved (CRLF stays CRLF).
     """
     path = Path(path)
-    text = path.read_text(encoding=encoding)
+    with open(path, "r", encoding=encoding, newline="") as f:
+        text = f.read()
     if dialect is None:
         dialect = detect_dialect(path)
-    return strip_comments(text, dialect=dialect, strip_blank_lines=strip_blank_lines)
+    return strip_comments(
+        text,
+        dialect=dialect,
+        strip_blank_lines=strip_blank_lines,
+        blank_lines=blank_lines,
+        protect_code=protect_code,
+    )

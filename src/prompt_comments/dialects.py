@@ -68,6 +68,9 @@ def _dialect(name: str, *, line=(), block=()) -> Dialect:
 
 _BASE: Dict[str, Dialect] = {
     "default": _dialect("default", line=[_SLASH_LINE], block=[_JINJA_BLOCK, _HTML_BLOCK]),
+    # "default" minus the `//` line comment: the wire-level default (proxy / install()),
+    # where the text includes third-party instructions that mention `//` in prose.
+    "blocks": _dialect("blocks", block=[_JINJA_BLOCK, _HTML_BLOCK]),
     "jinja": _dialect("jinja", block=[_JINJA_BLOCK]),
     "django": _dialect("django", block=[_JINJA_BLOCK, _LIQUID_BLOCK]),
     "liquid": _dialect("liquid", block=[_LIQUID_BLOCK]),

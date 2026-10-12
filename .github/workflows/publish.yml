@@ -5,7 +5,23 @@ on:
     types: [published]
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Release tag must match the package version
+        run: |
+          VERSION=$(sed -n 's/^__version__ = "\(.*\)"$/\1/p' src/prompt_comments/__init__.py)
+          echo "package version: $VERSION, release tag: $GITHUB_REF_NAME"
+          [ "v$VERSION" = "$GITHUB_REF_NAME" ] || { echo "tag does not match version"; exit 1; }
+      - run: pip install -e ".[dev]"
+      - run: pytest -v
+
   publish:
+    needs: test
     runs-on: ubuntu-latest
     environment: pypi
     permissions:

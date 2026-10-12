@@ -1,0 +1,7 @@
+- id: prompt-comments-build
+  name: prompt-comments build --check
+  description: Fail if a generated CLAUDE.md / AGENTS.md is out of date with its *.src.md source.
+  entry: prompt-comments build --check
+  language: python
+  files: '\.src\.(md|mdc|txt)$'
+  pass_filenames: false
